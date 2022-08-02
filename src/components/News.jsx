@@ -11,34 +11,35 @@ export default class news extends Component {
   static propTypes={
     country:PropTypes.string,
     category:PropTypes.string,
-    page:PropTypes.number
   }
 
   constructor(props) {
     super(props);
     this.state = {
       articles: [],
-      loading: false
+      loading: false,
+      page:1
     }
     document.title=`${this.props.category} - Newsninja`
   }
   async componentDidMount() {
-    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=038fd8ecfd414d5dbbb289eb0b294a06 &page=${this.props.page} &pagesize=10`
+    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=571c66ae2b174d1480807fd57891648b &page=${this.props.page} &pagesize=10`
     this.setState({ loading: true })
     let data = await fetch(url)
     let pdata = await data.json()
     this.setState({
       articles: pdata.articles,
       totalresults: pdata.totalresults,
+      page:1,
       loading: false
     })
   }
   ppage = async () => {
-    if (this.state.page === 1) {
-
+    if (this.state.page<=1) {
+      
     }
-    else {
-      let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country} &category=${this.props.category}&apiKey=038fd8ecfd414d5dbbb289eb0b294a06 &page=${this.state.page - 1} &pagesize=10`
+    console.log("p");
+      let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country} &category=${this.props.category}&apiKey=571c66ae2b174d1480807fd57891648b &page=${this.state.page- 1} &pagesize=10`
       this.setState({ loading: true })
       let data = await fetch(url)
       let pdata = await data.json()
@@ -46,14 +47,14 @@ export default class news extends Component {
       this.setState({
         page: this.state.page - 1
       })
-    }
   }
   npage = async () => {
-    if (this.state.page + 1 >= Math.ceil(this.state.totalresults / 20)) {
+    if (this.state.page + 1 > Math.ceil(this.state.totalResults/20)){
 
     }
-    else {
-      let url = `https://newsapi.org/v2/top-headlines?country=IN&category=${this.props.category}&apiKey=038fd8ecfd414d5dbbb289eb0b294a06 &page=${this.state.page + 1} &pagesize=10`
+     else {
+      console.log("n");
+      let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=571c66ae2b174d1480807fd57891648b &page=${this.state.page + 1} &pagesize=10`
       this.setState({ loading: true })
       let data = await fetch(url)
       let pdata = await data.json()
@@ -77,7 +78,7 @@ export default class news extends Component {
             })}
           </div>
           <div className='m-4 flex justify-between'>
-            <button className='border-none rounded-lg text-xl bg-orange-600 text-white p-1 ' onClick={this.ppage}>Previous</button>
+            <button  disabled={this.state.page<=1} className='border-none rounded-lg text-xl bg-orange-600 text-white p-1 ' onClick={this.ppage}>Previous</button>
             <button className='border-none rounded-lg text-xl bg-orange-600 text-white p-1' onClick={this.npage}>Next</button>
           </div>
         </div>
